@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="浅谈家庭环境网络配置 Across the Great Wall we can reach every corner in the world  拓扑 主路由配置 思路来源  参考文章的思路，在路由器官方固件支持的情况下，直接设置静态路由表即可（实测H3C NX54无需以下配置）； 对于后台管理页面不支持设置静态路由的设备，可尝试解锁ssh，参考如下配置进行修改  如无法修改静态路由，可以手动DH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈家庭环境网络配置">
+<meta property="og:url" content="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="浅谈家庭环境网络配置 Across the Great Wall we can reach every corner in the world  拓扑 主路由配置 思路来源  参考文章的思路，在路由器官方固件支持的情况下，直接设置静态路由表即可（实测H3C NX54无需以下配置）； 对于后台管理页面不支持设置静态路由的设备，可尝试解锁ssh，参考如下配置进行修改  如无法修改静态路由，可以手动DH">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/homeinfra.drawio.svg">
+<meta property="article:published_time" content="2026-03-19T11:02:55.000Z">
+<meta property="article:modified_time" content="2026-03-19T13:37:06.957Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Networking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/homeinfra.drawio.svg">
+
+<link rel="canonical" href="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>浅谈家庭环境网络配置 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅谈家庭环境网络配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2026-03-19 19:02:55 / Modified: 21:37:06" itemprop="dateCreated datePublished" datetime="2026-03-19T19:02:55+08:00">2026-03-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="浅谈家庭环境网络配置"><a href="#浅谈家庭环境网络配置" class="headerlink" title="浅谈家庭环境网络配置"></a>浅谈家庭环境网络配置</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.cnnic.com.cn/IDR/hlwfzdsj/201306/t20130628_40563.htm"><em>Across the Great Wall we can reach every corner in the world</em></a></p>
+</blockquote>
+<h1 id="拓扑"><a href="#拓扑" class="headerlink" title="拓扑"></a>拓扑</h1><p><img src="/images/homeinfra.drawio.svg" alt="homeinfra"></p>
+<h1 id="主路由配置"><a href="#主路由配置" class="headerlink" title="主路由配置"></a>主路由配置</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://beyondkmp.com/2023/03/11/ax6000-static-ip-router-config/#!">思路来源</a></p>
+</blockquote>
+<p>参考文章的思路，在路由器官方固件支持的情况下，直接设置静态路由表即可<br>（实测H3C NX54无需以下配置）；</p>
+<p>对于后台管理页面不支持设置静态路由的设备，可尝试解锁ssh，参考如下配置进行修改</p>
+<ul>
+<li>如无法修改静态路由，可以手动DHCP，将网关指向旁路由（此方法访问国内站点时，会受限于旁路由的转发性能）</li>
+</ul>
+<h2 id="设置路由表"><a href="#设置路由表" class="headerlink" title="设置路由表"></a>设置路由表</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/config/network</span><br></pre></td></tr></table></figure>
+
+<h3 id="增加FakeIP段路由"><a href="#增加FakeIP段路由" class="headerlink" title="增加FakeIP段路由"></a>增加FakeIP段路由</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">config route</span><br><span class="line">	option interface &#x27;lan&#x27;</span><br><span class="line">	option target &#x27;198.18.0.0&#x27;</span><br><span class="line">	option netmask &#x27;255.255.0.0&#x27;</span><br><span class="line">	option gateway &#x27;替换成旁路由的IP地址&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改防火墙"><a href="#修改防火墙" class="headerlink" title="修改防火墙"></a>修改防火墙</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/config/firewall</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改转发配置"><a href="#修改转发配置" class="headerlink" title="修改转发配置"></a>修改转发配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">config defaults</span><br><span class="line">	option syn_flood &#x27;0&#x27;</span><br><span class="line">	option input &#x27;ACCEPT&#x27;</span><br><span class="line">	option output &#x27;ACCEPT&#x27;</span><br><span class="line">	option forward &#x27;ACCEPT&#x27; # 这里需要从REJECT改成ACCEPT</span><br><span class="line">	option drop_invalid &#x27;0&#x27; # 这里需要从1改成0</span><br><span class="line"></span><br><span class="line">config zone</span><br><span class="line">	option name &#x27;lan&#x27;</span><br><span class="line">	option network &#x27;lan&#x27;</span><br><span class="line">	option input &#x27;ACCEPT&#x27;</span><br><span class="line">	option output &#x27;ACCEPT&#x27;</span><br><span class="line">	option forward &#x27;ACCEPT&#x27; # 这里需要从REJECT改成ACCEPT</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="应用配置"><a href="#应用配置" class="headerlink" title="应用配置"></a>应用配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/network restart</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+
+<h1 id="OpenWRT配置"><a href="#OpenWRT配置" class="headerlink" title="OpenWRT配置"></a>OpenWRT配置</h1><p>OpenClash劫持DNS服务，运行在FakeIP+Tun模式下，FakeIP段需与静态路由中设置的保持一致</p>
+<p>个人觉得，采用FakeIP的优点如下：</p>
+<ul>
+<li>通过静态路由表实现无感分流，只需修改客户端DNS即可实现代理</li>
+<li>在远端进行DNS解析，减少RealIP时网络栈需要等待DNS结果，再建立链接的过程（一次RTT）</li>
+</ul>
+<p>而对于FakeIP的缺点，即FakeIP失效问题，可以通过TTL&#x3D;1解决</p>
+<p>OpenClash插件在Tun模式下，会自动注入路由规则</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">198.18.0.0/16 dev utun scope link</span><br></pre></td></tr></table></figure>
+
+<p>使得来自主路由转发的FakeIP流量，能够进入旁路由的Tun网卡，从而被正确转发到Mihomo内核，完成后续的代理过程</p>
+<h1 id="内网服务配置"><a href="#内网服务配置" class="headerlink" title="内网服务配置"></a>内网服务配置</h1><p>出于安全考虑，建议内网所有服务仅监听LAN地址，避免将任何内网服务暴露到公网</p>
+<p>如果有远程访问内网的需求，建议自行配置VPN，下文以<a target="_blank" rel="noopener" href="https://wiki.metacubex.one/config/inbound/">Mihomo</a>为例</p>
+<blockquote>
+<p>在糟糕的跨网访问环境下，建议使用TCP连接增强稳定性</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">listeners:</span><br><span class="line">  - name: AAA-in-ipv6 # 公网ipv6直连，需要主路由直接拨号</span><br><span class="line">    type: # 选择带鉴权的协议</span><br><span class="line">    port: # 选择高位端口</span><br><span class="line">    listen: ::0 # ipv6通配，主路由需关闭ipv6防火墙，旁路由仅允许来自该端口的ipv6流量访问</span><br></pre></td></tr></table></figure>
+
+<p>再使用DDNS-GO，将旁路由分配到的ipv6公网地址解析到域名</p>
+<h2 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h2><p>这又引申出一个问题，在没有ipv6的环境下，如何访问内网服务？</p>
+<ul>
+<li>一是通过cloudflared借助cf服务器进行中转，延迟较高，建议作为兜底</li>
+<li>二是使用NATMap进行NAT打洞，延迟较低</li>
+</ul>
+<blockquote>
+<p>注意：NATMap需要NAT1环境，主路由需要将DMZ主机设置为旁路由，否则可能需要考虑其他中转方式（cloudflared等）</p>
+</blockquote>
+<p>下文以NATMap为例，介绍借助CF Worker和SubStore，实现自动更新节点为打洞后的地址（思路由Gemini生成，验证可行）</p>
+<ol>
+<li>CF Worker配置</li>
+</ol>
+<ul>
+<li>确保已在Settings中配置环境变量SECRET_TOKEN（密码），并绑定KV命名空间NATMAP_KV</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">fetch</span>(<span class="params">request, env, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> url = <span class="keyword">new</span> <span class="title function_">URL</span>(request.<span class="property">url</span>);</span><br><span class="line">    <span class="keyword">const</span> userAgent = request.<span class="property">headers</span>.<span class="title function_">get</span>(<span class="string">&quot;User-Agent&quot;</span>) || <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 基础防爬：拦截空 UA 或明显脚本特征（放行 Sub-Store 和正常的手机客户端）</span></span><br><span class="line">    <span class="keyword">if</span> (!userAgent || (userAgent.<span class="title function_">includes</span>(<span class="string">&quot;curl&quot;</span>) &amp;&amp; request.<span class="property">method</span> === <span class="string">&quot;GET&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Access Denied&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">403</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// [GET] 供 Sub-Store 获取最新地址，路径: /sub?token=你的密码</span></span><br><span class="line">    <span class="keyword">if</span> (request.<span class="property">method</span> === <span class="string">&quot;GET&quot;</span> &amp;&amp; url.<span class="property">pathname</span> === <span class="string">&quot;/sub&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> token = url.<span class="property">searchParams</span>.<span class="title function_">get</span>(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (token !== env.<span class="property">SECRET_TOKEN</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Unauthorized&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">401</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 从 KV 数据库读取</span></span><br><span class="line">      <span class="keyword">const</span> address = <span class="keyword">await</span> env.<span class="property">NATMAP_KV</span>.<span class="title function_">get</span>(<span class="string">&quot;natmap_address&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (!address) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;No node available yet.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">404</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(address, &#123;</span><br><span class="line">        <span class="attr">headers</span>: &#123; <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;text/plain; charset=utf-8&quot;</span> &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// [POST] 供路由器 natmap 脚本推送更新，路径: /update</span></span><br><span class="line">    <span class="keyword">if</span> (request.<span class="property">method</span> === <span class="string">&quot;POST&quot;</span> &amp;&amp; url.<span class="property">pathname</span> === <span class="string">&quot;/update&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> authHeader = request.<span class="property">headers</span>.<span class="title function_">get</span>(<span class="string">&quot;Authorization&quot;</span>);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 验证 Bearer Token</span></span><br><span class="line">      <span class="keyword">if</span> (authHeader !== <span class="string">`Bearer <span class="subst">$&#123;env.SECRET_TOKEN&#125;</span>`</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Unauthorized&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">401</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> newAddress = <span class="keyword">await</span> request.<span class="title function_">text</span>();</span><br><span class="line">      <span class="comment">// 简单校验格式是否包含冒号 (IP:端口)</span></span><br><span class="line">      <span class="keyword">if</span> (!newAddress || !newAddress.<span class="title function_">includes</span>(<span class="string">&quot;:&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Bad Request: Invalid format&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">400</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 写入 KV 数据库</span></span><br><span class="line">      <span class="keyword">await</span> env.<span class="property">NATMAP_KV</span>.<span class="title function_">put</span>(<span class="string">&quot;natmap_address&quot;</span>, newAddress);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Update Success: &quot;</span> + newAddress, &#123; <span class="attr">status</span>: <span class="number">200</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Not Found&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">404</span> &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>NATMap触发脚本</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># natmap 传入的参数</span></span><br><span class="line">PUBLIC_IP=<span class="variable">$1</span></span><br><span class="line">PUBLIC_PORT=<span class="variable">$2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$PUBLIC_IP</span>&quot;</span> ] || [ -z <span class="string">&quot;<span class="variable">$PUBLIC_PORT</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Error: Missing IP or Port&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ================= 你的配置区 =================</span></span><br><span class="line"><span class="comment"># 替换为你的 Worker 域名和刚刚设定的 Token</span></span><br><span class="line">WORKER_URL=<span class="string">&quot;https://你的worker前缀.你的用户名.workers.dev&quot;</span></span><br><span class="line">SECRET_TOKEN=<span class="string">&quot;你的自定义密码&quot;</span></span><br><span class="line"><span class="comment"># ==============================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拼接为 IP:端口 格式</span></span><br><span class="line">PAYLOAD=<span class="string">&quot;<span class="variable">$&#123;PUBLIC_IP&#125;</span>:<span class="variable">$&#123;PUBLIC_PORT&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送 POST 请求至 Cloudflare Worker</span></span><br><span class="line">curl -s -X POST <span class="string">&quot;<span class="variable">$&#123;WORKER_URL&#125;</span>/update&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: text/plain&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$&#123;SECRET_TOKEN&#125;</span>&quot;</span> \</span><br><span class="line">  -d <span class="string">&quot;<span class="variable">$&#123;PAYLOAD&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 记录本地日志</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="subst">$(date)</span>: Updated natmap address to <span class="variable">$&#123;PAYLOAD&#125;</span>&quot;</span> &gt;&gt; /var/log/natmap_update.log</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>SubStore脚本</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">operator</span>(<span class="params">proxies</span>) &#123;</span><br><span class="line">    <span class="comment">// ================= 你的配置区 =================</span></span><br><span class="line">    <span class="comment">// 替换为你的 Worker 订阅地址和 Token</span></span><br><span class="line">    <span class="keyword">const</span> apiUrl = <span class="string">&quot;https://你的worker前缀.你的用户名.workers.dev/sub?token=你的自定义密码&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 你在 Sub-Store 里建的那个基础代理节点的名字</span></span><br><span class="line">    <span class="keyword">const</span> targetNodeName = <span class="string">&quot;Home_Intranet&quot;</span>;</span><br><span class="line">    <span class="comment">// ==============================================</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 请求 Cloudflare API 获取最新 IP:端口</span></span><br><span class="line">        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(apiUrl);</span><br><span class="line">        <span class="keyword">if</span> (!response.<span class="property">ok</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">`HTTP Error: <span class="subst">$&#123;response.status&#125;</span>`</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="title function_">text</span>();</span><br><span class="line">        <span class="keyword">const</span> parts = data.<span class="title function_">trim</span>().<span class="title function_">split</span>(<span class="string">&quot;:&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (parts.<span class="property">length</span> === <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">const</span> newIp = parts[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">const</span> newPort = <span class="built_in">parseInt</span>(parts[<span class="number">1</span>], <span class="number">10</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 遍历所有节点，精准狙击并覆写目标节点</span></span><br><span class="line">            proxies.<span class="title function_">forEach</span>(<span class="function"><span class="params">proxy</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (proxy.<span class="property">name</span> === targetNodeName) &#123;</span><br><span class="line">                    proxy.<span class="property">server</span> = newIp;</span><br><span class="line">                    proxy.<span class="property">port</span> = newPort;</span><br><span class="line">                    <span class="comment">// 可选项：动态修改节点名称，在客户端直观展示当前连的哪个端口</span></span><br><span class="line">                    proxy.<span class="property">name</span> = <span class="string">`<span class="subst">$&#123;targetNodeName&#125;</span> [<span class="subst">$&#123;newPort&#125;</span>]`</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="comment">// 请求失败时静默捕获，Sub-Store 将使用原基础节点的配置(或缓存)</span></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Fetch natmap port failed: &quot;</span> + e.<span class="property">message</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 必须返回原数组，让 Sub-Store 继续后续流水线</span></span><br><span class="line">    <span class="keyword">return</span> proxies;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Networking/" rel="tag"># Networking</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/11/My-New-Post/" rel="prev" title="My New Post">
+      <i class="fa fa-chevron-left"></i> My New Post
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">浅谈家庭环境网络配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%93%E6%89%91"><span class="nav-number">2.</span> <span class="nav-text">拓扑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">主路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">设置路由表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0FakeIP%E6%AE%B5%E8%B7%AF%E7%94%B1"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加FakeIP段路由</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">3.2.</span> <span class="nav-text">修改防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%BD%AC%E5%8F%91%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.1.</span> <span class="nav-text">修改转发配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">应用配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenWRT%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">OpenWRT配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">内网服务配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="nav-number">5.1.</span> <span class="nav-text">内网穿透</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
