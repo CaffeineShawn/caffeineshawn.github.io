@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="浅谈家庭环境网络配置 Across the Great Wall we can reach every corner in the world  拓扑 主路由配置 思路来源  参考文章的思路，在路由器官方固件支持的情况下，直接设置静态路由表即可（实测H3C NX54无需以下配置）； 对于后台管理页面不支持设置静态路由的设备，可尝试解锁ssh，参考如下配置进行修改  如无法修改静态路由，可以手动DH">
+  <meta name="description" content="引言 Across the Great Wall we can reach every corner in the world  拓扑主要设备连接2.5G交换机，OpenWRT为旁路由N1，后将二者连接到主路由的LAN口，使用主路由作为DHCP服务器。  将需要代理流量的设备DNS指向旁路由，主路由修改静态路由表，将特定IP段的流量转发给旁路由。   主路由配置 思路来源  参考文章的思路，在路由">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浅谈家庭环境网络配置">
+<meta property="og:title" content="我是如何配置家庭网络环境的">
 <meta property="og:url" content="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/index.html">
-<meta property="og:site_name" content="Shawn&#39;s Blog">
-<meta property="og:description" content="浅谈家庭环境网络配置 Across the Great Wall we can reach every corner in the world  拓扑 主路由配置 思路来源  参考文章的思路，在路由器官方固件支持的情况下，直接设置静态路由表即可（实测H3C NX54无需以下配置）； 对于后台管理页面不支持设置静态路由的设备，可尝试解锁ssh，参考如下配置进行修改  如无法修改静态路由，可以手动DH">
-<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="引言 Across the Great Wall we can reach every corner in the world  拓扑主要设备连接2.5G交换机，OpenWRT为旁路由N1，后将二者连接到主路由的LAN口，使用主路由作为DHCP服务器。  将需要代理流量的设备DNS指向旁路由，主路由修改静态路由表，将特定IP段的流量转发给旁路由。   主路由配置 思路来源  参考文章的思路，在路由">
+<meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/homeinfra.drawio.svg">
 <meta property="article:published_time" content="2026-03-19T11:02:55.000Z">
-<meta property="article:modified_time" content="2026-03-19T13:46:46.511Z">
-<meta property="article:author" content="shawn">
+<meta property="article:modified_time" content="2026-03-20T04:34:36.480Z">
+<meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Networking">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/homeinfra.drawio.svg">
@@ -44,11 +44,11 @@
     sidebar: "",
     isHome : false,
     isPost : true,
-    lang   : 'zh-CN'
+    lang   : 'en'
   };
 </script>
 
-  <title>浅谈家庭环境网络配置 | Shawn's Blog</title>
+  <title>我是如何配置家庭网络环境的 | Hexo</title>
   
 
 
@@ -88,7 +88,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
+    <div class="toggle" aria-label="Toggle navigation bar">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -99,7 +99,7 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Shawn's Blog</h1>
+      <h1 class="site-title">Hexo</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -117,12 +117,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
   </ul>
@@ -152,21 +152,21 @@
     
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="shawn">
+      <meta itemprop="name" content="John Doe">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shawn's Blog">
+      <meta itemprop="name" content="Hexo">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          浅谈家庭环境网络配置
+          我是如何配置家庭网络环境的
         </h1>
 
         <div class="post-meta">
@@ -174,11 +174,17 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">发表于</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
-              <time title="创建时间：2026-03-19 19:02:55 / 修改时间：21:46:46" itemprop="dateCreated datePublished" datetime="2026-03-19T19:02:55+08:00">2026-03-19</time>
+              <time title="Created: 2026-03-19 19:02:55" itemprop="dateCreated datePublished" datetime="2026-03-19T19:02:55+08:00">2026-03-19</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-03-20 12:34:36" itemprop="dateModified" datetime="2026-03-20T12:34:36+08:00">2026-03-20</time>
+              </span>
 
           
 
@@ -191,10 +197,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="浅谈家庭环境网络配置"><a href="#浅谈家庭环境网络配置" class="headerlink" title="浅谈家庭环境网络配置"></a>浅谈家庭环境网络配置</h1><blockquote>
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.cnnic.com.cn/IDR/hlwfzdsj/201306/t20130628_40563.htm"><em>Across the Great Wall we can reach every corner in the world</em></a></p>
 </blockquote>
-<h1 id="拓扑"><a href="#拓扑" class="headerlink" title="拓扑"></a>拓扑</h1><p><img src="/images/homeinfra.drawio.svg" alt="homeinfra"></p>
+<h1 id="拓扑"><a href="#拓扑" class="headerlink" title="拓扑"></a>拓扑</h1><p>主要设备连接2.5G交换机，OpenWRT为旁路由N1，后将二者连接到主路由的LAN口，使用主路由作为DHCP服务器。</p>
+<blockquote>
+<p>将需要代理流量的设备DNS指向旁路由，主路由修改静态路由表，将特定IP段的流量转发给旁路由。</p>
+</blockquote>
+<p><img src="/images/homeinfra.drawio.svg" alt="homeinfra"></p>
 <h1 id="主路由配置"><a href="#主路由配置" class="headerlink" title="主路由配置"></a>主路由配置</h1><blockquote>
 <p><a target="_blank" rel="noopener" href="https://beyondkmp.com/2023/03/11/ax6000-static-ip-router-config/#!">思路来源</a></p>
 </blockquote>
@@ -214,34 +224,34 @@
 
 <h2 id="应用配置"><a href="#应用配置" class="headerlink" title="应用配置"></a>应用配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/network restart</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
 
-<h1 id="OpenWRT配置"><a href="#OpenWRT配置" class="headerlink" title="OpenWRT配置"></a>OpenWRT配置</h1><p>OpenClash劫持DNS服务，运行在FakeIP+Tun模式下，FakeIP段需与静态路由中设置的保持一致</p>
+<h1 id="旁路由配置"><a href="#旁路由配置" class="headerlink" title="旁路由配置"></a>旁路由配置</h1><p>OpenWRT旁路由安装OpenClash，通过任意方式将本机53端口的请求转发到核心，核心运行在FakeIP+Tun模式下，FakeIP段需与静态路由中设置的保持一致。</p>
 <p>个人觉得，采用FakeIP的优点如下：</p>
 <ul>
-<li>通过静态路由表实现无感分流，只需修改客户端DNS即可实现代理</li>
-<li>在远端进行DNS解析，减少RealIP时网络栈需要等待DNS结果，再建立链接的过程（一次RTT）</li>
+<li>通过静态路由表实现无感分流，只需修改客户端DNS即可实现代理；</li>
+<li>在远端进行DNS解析，减少RealIP时网络栈需要等待DNS结果，再建立链接的过程（一次RTT）。</li>
 </ul>
-<p>而对于FakeIP的缺点，即FakeIP失效问题，可以通过TTL&#x3D;1解决</p>
-<p>OpenClash插件在Tun模式下，会自动注入路由规则</p>
+<p>OpenClash插件在Tun模式下，会自动注入路由规则：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">198.18.0.0/16 dev utun scope link</span><br></pre></td></tr></table></figure>
 
-<p>使得来自主路由转发的FakeIP流量，能够进入旁路由的Tun网卡，从而被正确转发到Mihomo内核，完成后续的代理过程</p>
-<h1 id="内网服务配置"><a href="#内网服务配置" class="headerlink" title="内网服务配置"></a>内网服务配置</h1><p>出于安全考虑，建议内网所有服务仅监听LAN地址，避免将任何内网服务暴露到公网</p>
+<p>使得来自主路由转发的FakeIP流量，能够进入旁路由的Tun网卡，被正确转发到Mihomo内核，完成后续的流量代理过程。</p>
+<p><em>注意：如果不是OpenClash，需要手动允许FakeIP流量进入核心，比如配置ip forwarding等。</em></p>
+<h1 id="内网服务配置"><a href="#内网服务配置" class="headerlink" title="内网服务配置"></a>内网服务配置</h1><p>出于安全考虑，建议内网所有服务仅监听LAN地址，避免将任何内网服务暴露到公网。</p>
 <p>如果有远程访问内网的需求，建议自行配置VPN，下文以<a target="_blank" rel="noopener" href="https://wiki.metacubex.one/config/inbound/">Mihomo</a>为例</p>
 <blockquote>
-<p>在糟糕的跨网访问环境下，建议使用TCP连接增强稳定性</p>
+<p>在糟糕的跨网访问环境下，建议使用TCP连接增强稳定性。</p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">listeners:</span><br><span class="line">  - name: AAA-in-ipv6 # 公网ipv6直连，需要主路由直接拨号</span><br><span class="line">    type: # 选择带鉴权的协议</span><br><span class="line">    port: # 选择高位端口</span><br><span class="line">    listen: ::0 # ipv6通配，主路由需关闭ipv6防火墙，旁路由仅允许来自该端口的ipv6流量访问</span><br></pre></td></tr></table></figure>
 
-<p>再使用DDNS-GO，将旁路由分配到的ipv6公网地址解析到域名</p>
-<h2 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h2><p>这又引申出一个问题，在没有ipv6的环境下，如何访问内网服务？</p>
+<p>再使用DDNS-GO，将旁路由分配到的ipv6公网地址解析到域名，即可实现在具备ipv6的环境下，通过特定端口远程访问家中内网。</p>
+<h2 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h2><p>在没有ipv6的环境下，如何访问内网服务？</p>
 <ul>
-<li>一是通过cloudflared借助cf服务器进行中转，延迟较高，建议作为兜底</li>
-<li>二是使用NATMap进行NAT打洞，延迟较低</li>
+<li>一是通过cloudflared借助cf服务器进行中转，延迟较高，建议作为兜底；</li>
+<li>二是使用NATMap进行NAT打洞，延迟较低。</li>
 </ul>
 <blockquote>
-<p>注意：NATMap需要NAT1环境，主路由需要将DMZ主机设置为旁路由，否则可能需要考虑其他中转方式（cloudflared等）</p>
+<p>注意：NATMap需要NAT1环境，主路由需要将DMZ主机设置为旁路由，否则可能需要考虑其他中转方式（cloudflared等）。</p>
 </blockquote>
-<p>下文以NATMap为例，介绍借助CF Worker和SubStore，实现自动更新节点为打洞后的地址（思路由Gemini生成，验证可行）</p>
+<p>下文以NATMap为例，介绍借助CF Worker和SubStore，实现自动更新节点为打洞后的地址（实现逻辑参考Gemini，实测可行）。</p>
 <ol>
 <li>CF Worker配置</li>
 </ol>
@@ -323,22 +333,22 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          文章目录
+          Table of Contents
         </li>
         <li class="sidebar-nav-overview">
-          站点概览
+          Overview
         </li>
       </ul>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">浅谈家庭环境网络配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%93%E6%89%91"><span class="nav-number">2.</span> <span class="nav-text">拓扑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">主路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">设置路由表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0FakeIP%E6%AE%B5%E8%B7%AF%E7%94%B1"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加FakeIP段路由</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">3.2.</span> <span class="nav-text">修改防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%BD%AC%E5%8F%91%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.1.</span> <span class="nav-text">修改转发配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">应用配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenWRT%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">OpenWRT配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">内网服务配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="nav-number">5.1.</span> <span class="nav-text">内网穿透</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%93%E6%89%91"><span class="nav-number">2.</span> <span class="nav-text">拓扑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">主路由配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">设置路由表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0FakeIP%E6%AE%B5%E8%B7%AF%E7%94%B1"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加FakeIP段路由</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">3.2.</span> <span class="nav-text">修改防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%BD%AC%E5%8F%91%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.1.</span> <span class="nav-text">修改转发配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">应用配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%81%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">旁路由配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">内网服务配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="nav-number">5.1.</span> <span class="nav-text">内网穿透</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">shawn</p>
+  <p class="site-author-name" itemprop="name">John Doe</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -347,12 +357,12 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">1</span>
-          <span class="site-state-item-name">日志</span>
+          <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
         <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">标签</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -382,9 +392,9 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">shawn</span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
         
