@@ -176,7 +176,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-03-20 12:56:29" itemprop="dateModified" datetime="2026-03-20T12:56:29+08:00">2026-03-20</time>
+                <time title="修改时间：2026-03-20 12:58:54" itemprop="dateModified" datetime="2026-03-20T12:58:54+08:00">2026-03-20</time>
               </span>
 
           
@@ -236,11 +236,11 @@
 <blockquote>
 <p><strong>建议</strong>：在复杂的跨 ISP 访问环境下，使用 TCP 连接以增强稳定性。</p>
 </blockquote>
-<h2 id="场景一：拥有-IPv6-公网地址（首推）"><a href="#场景一：拥有-IPv6-公网地址（首推）" class="headerlink" title="场景一：拥有 IPv6 公网地址（首推）"></a>场景一：拥有 IPv6 公网地址（首推）</h2><p>在具备 IPv6 的网络环境下，通过主路由直接获取 IPv6 地址，并在旁路由上配置具备鉴权能力的代理协议：</p>
+<h2 id="配置一：IPv6-直连"><a href="#配置一：IPv6-直连" class="headerlink" title="配置一：IPv6 直连"></a>配置一：IPv6 直连</h2><p>在具备 IPv6 的网络环境下，通过主路由直接获取 IPv6 地址，并在旁路由上配置具备鉴权能力的代理协议：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">listeners:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">AAA-in-ipv6</span> <span class="comment"># 公网 IPv6 直连入站</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">aaaaaa</span>      <span class="comment"># 选择带鉴权的安全协议（此处以 trojan 为例）</span></span><br><span class="line">    <span class="attr">port:</span> <span class="string">bbbbb</span>       <span class="comment"># 选择不易被封锁的高位端口</span></span><br><span class="line">    <span class="attr">listen:</span> <span class="string">&quot;::&quot;</span>      <span class="comment"># 监听所有 IPv6。主路由需关闭对应端口防火墙，旁路由仅允许该端口流量入站</span></span><br></pre></td></tr></table></figure>
 
 <p>随后配合 DDNS-GO 服务，将旁路由获取到的公网 IPv6 地址动态解析至个人域名。在外部具备 IPv6 的环境下，即可通过域名和特定端口安全地访问内网。</p>
-<h2 id="场景二：仅有-IPv4-且无公网-IP（内网穿透）"><a href="#场景二：仅有-IPv4-且无公网-IP（内网穿透）" class="headerlink" title="场景二：仅有 IPv4 且无公网 IP（内网穿透）"></a>场景二：仅有 IPv4 且无公网 IP（内网穿透）</h2><p>在没有 IPv6 或公网 IPv4 的环境下，主要有以下两种内网穿透方案：</p>
+<h2 id="配置二：IPv4-NAT打洞"><a href="#配置二：IPv4-NAT打洞" class="headerlink" title="配置二：IPv4 NAT打洞"></a>配置二：IPv4 NAT打洞</h2><p>在没有 IPv6 或公网 IPv4 的环境下，主要有以下两种内网穿透方案：</p>
 <ol>
 <li><strong>Cloudflare Tunnel (cloudflared)</strong>：借助 Cloudflare 节点网络进行反向代理，无需公网 IP 和端口映射，适合作为<strong>备用兜底方案</strong>，但国内访问延迟较高且速率一般。</li>
 <li><strong>NATMap (P2P 打洞)</strong>：利用运营商 NAT 策略进行直连打洞。打通后延迟极低，体验近乎直连公网。</li>
