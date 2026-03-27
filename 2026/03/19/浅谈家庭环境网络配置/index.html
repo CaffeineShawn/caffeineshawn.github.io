@@ -17,25 +17,25 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"caffeineshawn.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="引言 Across the Great Wall we can reach every corner in the world  网络拓扑在我的家庭网络环境中，主要设备均接入 2.5G 交换机。主路由负责拨号并作为 DHCP 服务器，旁路由（运行 OpenWRT 的斐讯 N1）与交换机一同接入主路由的 LAN 口。  核心思路：将需要代理的网络设备的 DNS 指向旁路由；同时在主路由上配置静态路由">
 <meta property="og:type" content="article">
 <meta property="og:title" content="家庭网络配置实践">
-<meta property="og:url" content="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:url" content="https://caffeineshawn.github.io/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="Shawn&#39;s Blog">
 <meta property="og:description" content="引言 Across the Great Wall we can reach every corner in the world  网络拓扑在我的家庭网络环境中，主要设备均接入 2.5G 交换机。主路由负责拨号并作为 DHCP 服务器，旁路由（运行 OpenWRT 的斐讯 N1）与交换机一同接入主路由的 LAN 口。  核心思路：将需要代理的网络设备的 DNS 指向旁路由；同时在主路由上配置静态路由">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/homeinfra.drawio.svg">
+<meta property="og:image" content="https://caffeineshawn.github.io/images/homeinfra.drawio.svg">
 <meta property="article:published_time" content="2026-03-19T11:02:55.000Z">
 <meta property="article:modified_time" content="2026-03-27T12:39:40.402Z">
 <meta property="article:author" content="Shawn">
 <meta property="article:tag" content="Networking">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/homeinfra.drawio.svg">
+<meta name="twitter:image" content="https://caffeineshawn.github.io/images/homeinfra.drawio.svg">
 
-<link rel="canonical" href="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+<link rel="canonical" href="https://caffeineshawn.github.io/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
 
 
 <script id="page-configurations">
@@ -153,7 +153,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+    <link itemprop="mainEntityOfPage" href="https://caffeineshawn.github.io/2026/03/19/%E6%B5%85%E8%B0%88%E5%AE%B6%E5%BA%AD%E7%8E%AF%E5%A2%83%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
